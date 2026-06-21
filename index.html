@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>mev.maitix.com</title>
+<title>实人认证</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   :root{
@@ -20,6 +20,7 @@
   body{
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",
                 "Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
     background:#f0f0f0; display:flex; justify-content:center; min-height:100vh;
   }
   .phone{
@@ -31,46 +32,48 @@
     background:var(--brand); color:#fff; height:52px;
     display:flex; align-items:center; justify-content:center;
     position:sticky; top:0; z-index:30;
-    font-size:17px; font-weight:600; letter-spacing:2px;
+    font-size:17px; font-weight:500; letter-spacing:2px;
   }
   .navbar .back{ position:absolute; left:16px; font-size:26px; line-height:1; font-weight:400; }
 
-  .content{ position:relative; flex:1; padding:22px 18px 30px; overflow:hidden; }
+  .content{
+    position:relative; flex:1; padding:22px 18px 30px; overflow:hidden;
+  }
   .watermark{
-    position:fixed; top:0; bottom:0;
+    position:fixed; top:52px; bottom:0;
     left:50%; transform:translateX(-50%);
     width:100%; max-width:420px;
-    pointer-events:none; z-index:20;
+    pointer-events:none; z-index:50;
     background-image:url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='180' height='96'>\
-<text x='2' y='70' font-size='12.5' fill='rgba(0,0,0,0.06)' \
-font-family='sans-serif' transform='rotate(-24 2 70)'>仅用于大麦实人认证</text></svg>");
+<svg xmlns='http://www.w3.org/2000/svg' width='132' height='70'>\
+<text x='2' y='52' font-size='11' fill='rgba(0,0,0,0.085)' \
+font-family='sans-serif' transform='rotate(-24 2 52)'>仅用于大麦实人认证</text></svg>");
     background-repeat:repeat;
   }
 
   .notice{ text-align:center; line-height:1.65; position:relative; z-index:6; }
-  .notice .black{ color:var(--ink); font-size:17px; font-weight:700; }
-  .notice .red{ color:var(--warn-red); font-weight:700; margin-top:5px; }
+  .notice .black{ color:var(--ink); font-size:17px; font-weight:600; }
+  .notice .red{ color:var(--warn-red); font-weight:600; margin-top:5px; }
   .notice .red.lg{ font-size:16px; }
   .notice .red.sm{ font-size:15px; }
 
-  .qr-wrap{ margin:20px auto 0; width:55%; max-width:230px; position:relative; z-index:6; }
+  .qr-wrap{ margin:20px auto 0; width:48%; max-width:200px; position:relative; z-index:6; }
   .qr-card{
-    background:#f7f7f7; border-radius:0; padding:10px;
+    background:#f7f7f7; border-radius:0; padding:9px;
     display:flex; align-items:center; justify-content:center;
     cursor:pointer; position:relative; min-height:auto;
   }
   #qrcode{ width:100%; line-height:0; }
   #qrcode img, #qrcode canvas{
-    display:block; width:100%; height:auto; background:#fff; padding:8px;
-    border-radius:0; image-rendering:pixelated;
+    display:block; width:100%; height:auto; background:#fff; padding:7px;
+    border:1px dashed #d6d6d6; image-rendering:pixelated;
   }
-  .uploaded{ width:100%; height:auto; aspect-ratio:1; object-fit:contain; background:#fff; padding:8px; }
+  .uploaded{ width:100%; height:auto; aspect-ratio:1; object-fit:contain; background:#fff; padding:7px; border:1px dashed #d6d6d6; }
 
   /* 旋转锥形渐变光带：两端为径向直线 → 落在方框上形成“斜边” */
   .runner{
     position:absolute; inset:0; border-radius:0; overflow:hidden;
-    pointer-events:none; padding:7px;            /* 光带粗细 */
+    pointer-events:none; padding:4px;            /* 光带粗细（变细） */
     -webkit-mask:
         linear-gradient(#000 0 0) content-box,
         linear-gradient(#000 0 0);
@@ -93,7 +96,7 @@ font-family='sans-serif' transform='rotate(-24 2 70)'>仅用于大麦实人认�
   @media (prefers-reduced-motion: reduce){ .runner-spin{ animation:none; } }
 
   .selfie{
-    margin:18px auto 0; width:calc(55% - 20px); max-width:210px; aspect-ratio:1;
+    margin:18px auto 0; width:calc(48% - 18px); max-width:182px; aspect-ratio:1;
     border-radius:0; overflow:hidden;
     position:relative; z-index:6; cursor:pointer;
     background:linear-gradient(135deg,#d9d4cb,#c4beb3);
@@ -109,20 +112,20 @@ font-family='sans-serif' transform='rotate(-24 2 70)'>仅用于大麦实人认�
   .info{ margin-top:24px; position:relative; z-index:6; border-top:1px solid var(--line); }
   .info .row{
     display:flex; align-items:center; justify-content:space-between;
-    padding:18px 4px; border-bottom:1px solid var(--line); min-height:58px;
+    padding:11px 4px; border-bottom:1px solid var(--line); min-height:auto;
   }
-  .info .label{ font-size:15px; color:var(--label); display:flex; align-items:center; gap:8px; }
-  .eye{ width:20px; height:20px; fill:#8c8c8c; cursor:pointer; }
-  .info .value{ display:flex; align-items:center; gap:10px; font-size:15px; color:var(--ink); }
+  .info .label{ font-size:12px; color:var(--label); display:flex; align-items:center; gap:7px; }
+  .eye{ width:17px; height:17px; fill:#8c8c8c; cursor:pointer; }
+  .info .value{ display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--ink); }
   .editable{ cursor:pointer; }
   .editable:active{ opacity:.55; }
   .badge{
     display:inline-flex; align-items:center; gap:4px;
     background:var(--badge-bg); color:var(--badge-fg);
-    font-size:12px; font-weight:600; padding:4px 9px; border-radius:20px;
+    font-size:10.5px; font-weight:600; padding:3px 8px; border-radius:20px;
   }
-  .badge svg{ width:13px; height:13px; fill:var(--badge-fg); }
-  .time{ color:#8c8c8c; font-size:14px; }
+  .badge svg{ width:11px; height:11px; fill:var(--badge-fg); }
+  .time{ color:#8c8c8c; font-size:11.5px; }
 
   input[type=file]{ display:none; }
 </style>
@@ -133,7 +136,6 @@ font-family='sans-serif' transform='rotate(-24 2 70)'>仅用于大麦实人认�
     <div class="navbar"><span class="back">‹</span>实人认证</div>
 
     <div class="content">
-      <div class="watermark"></div>
 
       <div class="notice">
         <div class="black">此码非购票凭证，仅用于身份信息核验</div>
@@ -183,6 +185,9 @@ font-family='sans-serif' transform='rotate(-24 2 70)'>仅用于大麦实人认�
     </div>
 
   </div>
+
+  <!-- 水印放在 .phone 之外、直接挂在 body 下，避免被 overflow:hidden 裁剪，确保 fixed 真正生效 -->
+  <div class="watermark"></div>
 
 <script>
   /* 二维码演示码 */
